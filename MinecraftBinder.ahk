@@ -1,4 +1,4 @@
-﻿; Version = 1.0.2
+﻿; Version = 1.0.0
 
 #Persistent
 #SingleInstance force
@@ -129,7 +129,7 @@ SendCommand(command) {
     if WinActive("ahk_class ApplicationFrameWindow") {
         if (A_TickCount - LastSent > 3000 || LastSent = "") {
             LastSent := A_TickCount
-            Sleep, 150
+            Sleep, 100
 			SendEvent, {T}
 			Sleep, 150
             SendEvent, %command%{Enter}
