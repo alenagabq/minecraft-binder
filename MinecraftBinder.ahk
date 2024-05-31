@@ -1,12 +1,13 @@
-﻿; Version = 1.0.0
+﻿; Version = 1.0.1
 
 #Persistent
 #SingleInstance force
 
 ; URL файла на GitHub
-GitHubURL := "https://raw.githubusercontent.com/alenagabq/minecraft-binder/main/MinecraftBinder.ahk"
+GitHubScriptURL := "https://raw.githubusercontent.com/alenagabq/minecraft-binder/main/MinecraftBinder.ahk"
 GitHubSoundListURL := "https://raw.githubusercontent.com/alenagabq/minecraft-binder/main/sound_files_list.txt"
 LocalScriptPath := A_ScriptFullPath
+SoundFolderPath := A_ScriptDir "\sound"
 
 ; Функция для загрузки файла из GitHub
 DownloadFile(url, savePath) {
@@ -66,12 +67,17 @@ DownloadFile(GitHubScriptURL, RemoteScriptPath)
 localVersion := GetVersion(LocalScriptPath)
 remoteVersion := GetVersion(RemoteScriptPath)
 
+; Отладочное сообщение для проверки версий
+MsgBox, 64, - Debug -, Local Version: %localVersion%`nRemote Version: %remoteVersion%
+
 ; Если версии отличаются, обновляем скрипт
 if (remoteVersion != "" && localVersion != remoteVersion) {
+    MsgBox, 64, - Debug -, Обнаружена новая версия: %remoteVersion%. Обновляем скрипт...
     FileMove, %RemoteScriptPath%, %LocalScriptPath%, 1  ; Перемещение с заменой
     MsgBox, 64, - MinecraftBinder -, Скрипт обновлен до версии %remoteVersion%. Перезагрузка...
     Reload  ; Перезагрузка скрипта
 } else {
+    MsgBox, 64, - Debug -, Скрипт уже обновлен или нет новой версии.
     FileDelete, %RemoteScriptPath%  ; Удаление временного файла, если не было обновления
 }
 
@@ -84,7 +90,7 @@ PlayStartSound() {
 }
 
 PlayStartSound()
-MsgBox, 64, - MinecraftBinder -, Скрипт успешно запущен, приятной игры!                       Авторство: xDarkGabRG, VK/TG: @alenagabq
+MsgBox, 64, - MinecraftBinder -, Скрипт успешно запущен, приятной игры! Авторство: xDarkGabRG, VK/TG: @alenagabq
 
 ^r::Reload
 
@@ -129,9 +135,9 @@ SendCommand(command) {
     if WinActive("ahk_class ApplicationFrameWindow") {
         if (A_TickCount - LastSent > 3000 || LastSent = "") {
             LastSent := A_TickCount
-            Sleep, 100
-			SendEvent, {T}
-			Sleep, 150
+            Sleep, 150
+            SendEvent, {T}
+            Sleep, 150
             SendEvent, %command%{Enter}
         }
     }
